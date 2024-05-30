@@ -3,31 +3,45 @@ name: Run Cypress Tests
 on:
   push:
     branches:
-      - main
+      - main  # Change this to the branch you want to trigger the workflow on
 
 jobs:
-  cypress-tests:
+  test:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Node.js and dependencies
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
+      - name: Update Node.js and NPM
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nodejs npm
+          sudo npm install -g npm@latest
+          node --version
+          npm --version
+
+      - name: Install Mochawesome if not already installed
+        run: |
+          if [ ! -d "node_modules/mochawesome" ]; then
+            npm install mochawesome mochawesome-merge mochawesome-report-generator --save-dev
+          fi
+
+      - name: Install Cypress if not already installed
+        run: |
+          if [ ! -d "node_modules/cypress" ]; then
+            npm install cypress@latest --save-dev
+          fi
+
+      # Add other dependency installations following a similar pattern
 
       - name: Install project dependencies
         run: npm ci
 
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v3
+        uses: cypress-io/github-action@v2
         with:
           browser: chrome
           headless: true
-          start: npm run dev  # or npm run main, depending on your setup
-          wait-on: 'http://nvent.com/en-us'  # Replace with the URL you want to wait for before running tests
-
-
-    # Add steps to deploy to AWS if needed
+          start: npm run dev  # Replace 'npm run dev' with your start command
+          wait-on: 'http://nvent.com'  # Replace 'env' with your base URL
