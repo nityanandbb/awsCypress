@@ -11,4 +11,3 @@ npm install
 
 # Verify Cypress installation
 npx cypress verify
-
