@@ -1,27 +1,33 @@
-name: Cypress Tests
+name: Run Cypress Tests
 
 on:
   push:
     branches:
-      - main  # Change this to the branch you want to trigger the workflow on
+      - main
 
 jobs:
-  test:
+  cypress-tests:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'  # Specify the Node.js version you are using
+      - name: Install Node.js and dependencies
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
 
-    - name: Run initialization script
-      run: ./init-script.sh
+      - name: Install project dependencies
+        run: npm ci
 
-    - name: Run Cypress tests
-      run: npm run cypress:run  # Adjust this command based on your npm scripts
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v3
+        with:
+          browser: chrome
+          headless: true
+          start: npm run dev  # or npm run main, depending on your setup
+          wait-on: 'http://nvent.com/en-us'  # Replace with the URL you want to wait for before running tests
+
 
     # Add steps to deploy to AWS if needed

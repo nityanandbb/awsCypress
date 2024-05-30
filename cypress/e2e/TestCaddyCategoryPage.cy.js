@@ -18,7 +18,7 @@ it("Verify Caddy Category page Home", () => {
   cy.contains("Cable/Conduit").click();
   cy.wait(2000);
   cy.contains("Beam").click();
-  cy.wait(5000);
+  cy.wait(7000);
   cy.get("div.facets-pills-wrapper>ul:nth-child(1)>li>a").should("be.visible");
   cy.get(".category-listing > :nth-child(1)").should("be.visible");
   cy.get(".counters > h2").should("be.visible");
