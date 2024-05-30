@@ -21,19 +21,19 @@ jobs:
       - name: Check for changes in package-lock.json
         run: |
           git fetch --prune --unshallow
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep package-lock.json || echo "::set-output name=changed::true"
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep package-lock.json || echo "changed=true" >> $GITHUB_ENV
       - name: Install or update dependencies
-        if: steps.setup-node.outputs.changed == 'true'
+        if: env.changed == 'true'
         run: npm ci
 
       # Install or update Cypress and other tools
       - name: Install or update Cypress and other tools
-        if: steps.setup-node.outputs.changed == 'true'
+        if: env.changed == 'true'
         run: npm install --no-save cypress mochawesome mochawesome-merge mochawesome-report-generator
 
       # Run Cypress tests
       - name: Run Cypress tests
-        if: steps.setup-node.outputs.changed == 'true'
+        if: env.changed == 'true'
         uses: cypress-io/github-action@v2
         with:
           browser: chrome
