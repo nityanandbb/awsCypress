@@ -1,4 +1,4 @@
-name: Cypress Tests
+name: Run Cypress Tests
 
 on:
   push:
@@ -10,18 +10,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'  # Specify the Node.js version you are using
+      - name: Update Node.js and NPM
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nodejs npm
+          sudo npm install -g npm@latest
+          node --version
+          npm --version
 
-    - name: Run initialization script
-      run: ./init-script.sh
+      - name: Install Mochawesome if not already installed
+        run: |
+          if [ ! -d "node_modules/mochawesome" ]; then
+            npm install mochawesome mochawesome-merge mochawesome-report-generator --save-dev
+          fi
 
-    - name: Run Cypress tests
-      run: npm run cypress:run  # Adjust this command based on your npm scripts
+      - name: Install Cypress if not already installed
+        run: |
+          if [ ! -d "node_modules/cypress" ]; then
+            npm install cypress@latest --save-dev
+          fi
 
-    # Add steps to deploy to AWS if needed
+      # Add other dependency installations following a similar pattern
+
+      - name: Install project dependencies
+        run: npm ci
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v2
+        with:
+          browser: chrome
+          headless: true
+          start: npm run dev  # Replace 'npm run dev' with your start command
+          wait-on: 'http://nvent.com'  # Replace 'env' with your base URL
