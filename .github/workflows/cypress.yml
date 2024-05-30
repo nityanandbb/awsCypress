@@ -13,15 +13,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Install or update dependencies
+      # Setup Node.js and install/update dependencies
       - name: Setup Node.js and install/update dependencies
         uses: actions/setup-node@v2
         with:
           node-version: '20'
+
+      # Check for changes in package-lock.json
       - name: Check for changes in package-lock.json
         run: |
           git fetch --prune --unshallow
           git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep package-lock.json || echo "changed=true" >> $GITHUB_ENV
+
+      # Install or update dependencies
       - name: Install or update dependencies
         if: env.changed == 'true'
         run: npm ci
