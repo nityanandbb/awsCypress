@@ -1,0 +1,27 @@
+name: Cypress Tests
+
+on:
+  push:
+    branches:
+      - main  # Change this to the branch you want to trigger the workflow on
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'  # Specify the Node.js version you are using
+
+    - name: Run initialization script
+      run: ./init-script.sh
+
+    - name: Run Cypress tests
+      run: npm run cypress:run  # Adjust this command based on your npm scripts
+
+    # Add steps to deploy to AWS if needed
