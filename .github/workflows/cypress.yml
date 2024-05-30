@@ -3,7 +3,7 @@ name: Run Cypress Tests
 on:
   push:
     branches:
-      - main  # Change this to the branch you want to trigger the workflow on
+      - main
 
 jobs:
   test:
@@ -13,35 +13,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Update Node.js and NPM
+      # Install or update dependencies
+      - name: Setup Node.js and install/update dependencies
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Check for changes in package-lock.json
         run: |
-          sudo apt-get update
-          sudo apt-get install -y nodejs npm
-          sudo npm install -g npm@latest
-          node --version
-          npm --version
-
-      - name: Install Mochawesome if not already installed
-        run: |
-          if [ ! -d "node_modules/mochawesome" ]; then
-            npm install mochawesome mochawesome-merge mochawesome-report-generator --save-dev
-          fi
-
-      - name: Install Cypress if not already installed
-        run: |
-          if [ ! -d "node_modules/cypress" ]; then
-            npm install cypress@latest --save-dev
-          fi
-
-      # Add other dependency installations following a similar pattern
-
-      - name: Install project dependencies
+          git fetch --prune --unshallow
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep package-lock.json || echo "::set-output name=changed::true"
+      - name: Install or update dependencies
+        if: steps.setup-node.outputs.changed == 'true'
         run: npm ci
 
+      # Install or update Cypress and other tools
+      - name: Install or update Cypress and other tools
+        if: steps.setup-node.outputs.changed == 'true'
+        run: npm install --no-save cypress mochawesome mochawesome-merge mochawesome-report-generator
+
+      # Run Cypress tests
       - name: Run Cypress tests
+        if: steps.setup-node.outputs.changed == 'true'
         uses: cypress-io/github-action@v2
         with:
           browser: chrome
           headless: true
-          start: npm run dev  # Replace 'npm run dev' with your start command
-          wait-on: 'http://nvent.com'  # Replace 'env' with your base URL
+          start: npm run dev
+          wait-on: 'http://localhost:3000'  # Assuming your application runs on localhost:3000
