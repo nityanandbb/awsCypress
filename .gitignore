@@ -131,3 +131,5 @@ dist
 
 #cypress files.
 package-lock.json
+# Videos
+/cypress/videos

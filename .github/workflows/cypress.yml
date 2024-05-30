@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js and install/update dependencies
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '20'
       - name: Check for changes in package-lock.json
         run: |
           git fetch --prune --unshallow
@@ -38,5 +38,4 @@ jobs:
         with:
           browser: chrome
           headless: true
-          start: npm run dev
-          wait-on: 'http://localhost:3000'  # Assuming your application runs on localhost:3000
+          start: npm run cypress:run
