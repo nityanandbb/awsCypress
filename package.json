@@ -7,7 +7,7 @@
     "mochawesome-report-generator": "^4.0.0"
   },
   "engines": {
-    "node": "^18.17.0 || >=20.5.0",
+    "node": "^20.5.0",
     "npm": "^10.8.1"
   },
   "scripts": {
@@ -16,4 +16,3 @@
     "cypress:open": "cypress open"
   }
 }
-
