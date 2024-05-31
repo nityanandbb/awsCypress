@@ -20,22 +20,35 @@ jobs:
           node-version: '20'
           npm-version: '9.8.0'
 
-      # Check for changes in package-lock.json
-      - name: Check for changes in package-lock.json
-        run: |
-          git fetch --prune --unshallow
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep package-lock.json || echo "changed=true" >> $GITHUB_ENV
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
 
-      # Install or update dependencies
-      - name: Install or update dependencies
-        if: env.changed == 'true'
-        run: npm ci
-
-      # Install or update Cypress and other tools
-      - name: Install or update Cypress and other tools
-        if: env.changed == 'true'
-        run: npm install --no-save cypress mochawesome mochawesome-merge mochawesome-report-generator
+      # Run Mocha tests and generate reports
+      - name: Run Mocha tests
+        run: npm test
 
       # Run Cypress tests
       - name: Run Cypress tests
         run: npm run cypress:run --if-present
+
+      # Upload Mocha report
+      - name: Upload Mocha report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: mocha-report
+          path: mochawesome-report
+
+      # Generate and upload merged Cypress and Mocha reports
+      - name: Generate merged report
+        run: |
+          npx mochawesome-merge mochawesome-report/*.json > mochawesome-report/merged-report.json
+          npx marge mochawesome-report/merged-report.json -o mochawesome-report
+
+      - name: Upload merged report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: merged-report
+          path: mochawesome-report
