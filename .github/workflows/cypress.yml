@@ -39,10 +39,9 @@ jobs:
 
       # Run Cypress tests
       - name: Run Cypress tests
-        run:
-          npm run cypress:run --if-present
+        run: npm run cypress:run --if-present
 
-          # Wait for HTML report to appear (sleep for 20 seconds)
+      # Wait for HTML report to appear (sleep for 20 seconds)
       - name: Wait for HTML report
         run: |
           timeout=30  # Timeout in seconds
@@ -55,9 +54,10 @@ jobs:
             fi
           done
 
+      # Upload Mochawesome report.
       - name: Upload Mochawesome report
         if: always()
-       uses: actions/upload-artifact@v2
-       with:
-       name: mochawesome-report
-       path: mochawesome-report
+        uses: actions/upload-artifact@v2
+        with:
+          name: mochawesome-report
+          path: mochawesome-report
