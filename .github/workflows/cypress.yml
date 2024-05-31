@@ -54,12 +54,10 @@ jobs:
             fi
           done
 
-
-
       # Upload Mochawesome report as an artifact
       - name: Upload Mochawesome report
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: mochawesome-report
-          path: mochawesome-report
+          path: awsCypress/mochawesome-report  # Adjust the path here
