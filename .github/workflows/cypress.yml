@@ -45,7 +45,7 @@ jobs:
       - name: Wait for HTML report
         run: |
           timeout=30  # Timeout in seconds
-          while [ ! -f mochawesome-report/index.html ]; do
+          while [ ! -f ./mochawesome-report/index.html ]; do
             sleep 1
             ((timeout--))
             if [ $timeout -eq 0 ]; then
