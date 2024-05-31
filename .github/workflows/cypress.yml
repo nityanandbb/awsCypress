@@ -41,10 +41,25 @@ jobs:
       - name: Run Cypress tests
         run: npm run cypress:run --if-present
 
+           # Wait for HTML report to appear (sleep for 20 seconds)
+      - name: Wait for HTML report
+        run: |
+          timeout=30  # Timeout in seconds
+          while [ ! -f mochawesome-report/index.html ]; do
+            sleep 1
+            ((timeout--))
+            if [ $timeout -eq 0 ]; then
+              echo "Timeout reached, HTML report not found."
+              exit 1
+            fi
+          done
+
+
+
       # Upload Mochawesome report as an artifact
       - name: Upload Mochawesome report
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: mochawesome-report
-          path: cypress/reports/mochawesome
+          path: mochawesome-report
