@@ -40,3 +40,11 @@ jobs:
       # Run Cypress tests
       - name: Run Cypress tests
         run: npm run cypress:run --if-present
+
+      # Upload Mochawesome report as an artifact
+      - name: Upload Mochawesome report
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: mochawesome-report
+          path: cypress/reports/mochawesome
