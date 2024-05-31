@@ -11,14 +11,13 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Updated to v3 for Node.js 20 support
+        uses: actions/checkout@v4  # Updated to v4 for Node.js 20 support
 
       # Setup Node.js and install/update dependencies
       - name: Setup Node.js and install/update dependencies
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4  # Updated to v4 for Node.js 20 support
         with:
           node-version: '20'
-          npm-version: '9.8.0'
 
       # Install dependencies
       - name: Install dependencies
@@ -35,7 +34,7 @@ jobs:
       # Upload Mocha report
       - name: Upload Mocha report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Updated to v4
         with:
           name: mocha-report
           path: mochawesome-report
@@ -48,7 +47,7 @@ jobs:
 
       - name: Upload merged report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Updated to v4
         with:
           name: merged-report
           path: mochawesome-report
