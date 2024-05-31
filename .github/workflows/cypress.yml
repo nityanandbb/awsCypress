@@ -14,17 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Determine if version has changed
-      - name: Check if version has changed
-        id: setup
-        run: |
-          current_version=$(cat version.txt)
-          if [ "$current_version" != "$GITHUB_SHA" ]; then
-            echo "::set-output name=versionChanged::true"
-          else
-            echo "::set-output name=versionChanged::false"
-          fi
-
       # Clear npm cache
       - name: Clear npm cache
         run: npm cache clean --force
