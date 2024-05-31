@@ -133,3 +133,7 @@ dist
  package-lock.json
 # Videos
 /cypress/videos
+#Report
+mochawesome-report
+#Screenshots
+cypress/screenshots

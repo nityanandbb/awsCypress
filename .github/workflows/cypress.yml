@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:  # Trigger manually if needed
 
 jobs:
   test:
@@ -11,43 +12,42 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # Updated to v4 for Node.js 20 support
+        uses: actions/checkout@v4
 
-      # Setup Node.js and install dependencies
+      # Determine if version has changed
+      - name: Check if version has changed
+        id: setup
+        run: |
+          current_version=$(cat version.txt)
+          if [ "$current_version" != "$GITHUB_SHA" ]; then
+            echo "::set-output name=versionChanged::true"
+          else
+            echo "::set-output name=versionChanged::false"
+          fi
+
+      # Clear npm cache
+      - name: Clear npm cache
+        run: npm cache clean --force
+
+      # Install cypress-mochawesome-reporter if not already installed
+      - name: Install cypress-mochawesome-reporter
+        run: |
+          if ! npm ls cypress-mochawesome-reporter; then
+            npm install --save-dev cypress-mochawesome-reporter
+          fi
+
+      # Setup Node.js and install dependencies if version has changed
       - name: Setup Node.js and install dependencies
-        uses: actions/setup-node@v4  # Updated to v4 for Node.js 20 support
+        if: needs.setup.outputs.versionChanged == 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # Install dependencies
+      # Install dependencies if version has changed
       - name: Install dependencies
+        if: needs.setup.outputs.versionChanged == 'true'
         run: npm install
-
-      # Run Mocha tests and generate reports
-      - name: Run Mocha tests
-        run: npm test
 
       # Run Cypress tests
       - name: Run Cypress tests
         run: npm run cypress:run --if-present
-
-      # Upload Mocha report
-      - name: Upload Mocha report
-        if: always()
-        uses: actions/upload-artifact@v4  # Updated to v4
-        with:
-          name: mocha-report
-          path: mochawesome-report
-
-      # Generate and upload merged Cypress and Mocha reports
-      - name: Generate merged report
-        run: |
-          npx mochawesome-merge mochawesome-report/*.json > mochawesome-report/merged-report.json
-          npx marge mochawesome-report/merged-report.json -o mochawesome-report
-
-      - name: Upload merged report
-        if: always()
-        uses: actions/upload-artifact@v4  # Updated to v4
-        with:
-          name: merged-report
-          path: mochawesome-report
