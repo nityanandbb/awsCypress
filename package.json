@@ -6,12 +6,12 @@
     "mochawesome-merge": "^4.0.0",
     "mochawesome-report-generator": "^4.0.0"
   },
- "engines": {
-  "node": ">=20.5.0",
-  "npm": ">=9.8.0"
-},
+  "engines": {
+    "node": ">=20.5.0",
+    "npm": ">=9.8.0"
+  },
   "scripts": {
-    "test": "mocha test/**/*.js --reporter mochawesome",
+    "test": "mocha 'cypress/e2e/**/*.cy.js' --reporter mochawesome",
     "cypress:run": "cypress run",
     "cypress:open": "cypress open"
   }
