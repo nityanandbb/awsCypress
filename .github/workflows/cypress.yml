@@ -13,8 +13,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4  # Updated to v4 for Node.js 20 support
 
-      # Setup Node.js and install dependencies
-      - name: Setup Node.js and install dependencies
+      # Setup Node.js and install/update dependencies
+      - name: Setup Node.js and install/update dependencies
         uses: actions/setup-node@v4  # Updated to v4 for Node.js 20 support
         with:
           node-version: '20'
