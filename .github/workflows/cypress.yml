@@ -75,15 +75,15 @@ jobs:
       - name: Sleep for 20 seconds
         run: sleep 20  # Sleep for 20 seconds
       
-      - name: Copy test execution videos, screenshots and reports
+      # Copy Allure Report Files
+      - name: Copy Allure Report Files
         run: |
-          mkdir public
-          cp -r cypress/screenshots public/screenshots
-          cp -a allure-report/. public
-          cp -r allure-results public/allure-results
-      
-      - name: Deploy report page to GitHub Page
-        uses: peaceiris/actions-gh-pages@v3
+          mkdir allure-artifact
+          cp -r allure-report/. allure-artifact
+
+      # Define Artifacts
+      - name: Upload Allure Report Artifact
+        uses: actions/upload-artifact@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          name: allure-report-artifact
+          path: allure-artifact
