@@ -44,7 +44,7 @@ jobs:
         run: npm i -D allure-cypress@2.14.0
         # Install Allure Reporter
       - name: Clean Allure Reporter
-        run: allure generate allure-results --clean
+        run: npx allure generate allure-results --clean
 
       # Run Cypress tests
       - name: Run Cypress tests
