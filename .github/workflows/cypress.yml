@@ -59,9 +59,18 @@ jobs:
               exit 1
             fi
           done
-      # Generate Allure Report
+  
+      # Upload Mochawesome report
+      - name: Upload Mochawesome report
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: mochawesome-report
+          path: mochawesome-report
+
+           # Generate Allure Report
       - name: Generate Allure Report
-        run: npx allure generate allure-results --output allure-report
+        run: npx allure serve allure-results
       # Export Allure Report URL
       - name: Export Allure Report URL
         run: |
@@ -73,11 +82,3 @@ jobs:
         with:
           name: allure-report-url
           path: allure-report-url.txt
-      # Upload Mochawesome report
-      - name: Upload Mochawesome report
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: mochawesome-report
-          path: mochawesome-report
-          
