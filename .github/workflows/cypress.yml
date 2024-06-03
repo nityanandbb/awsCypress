@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         if: needs.setup.outputs.versionChanged == 'true'
         run: npm install
-      # Install Allure com mand line
+      # Install Allure commandline
       - name: install Allure commandline
         run: npm install --save-dev allure-commandline
       # Install Allure Reporter
@@ -47,10 +47,10 @@ jobs:
       - name: Run Cypress tests
         run: npm run cypress:run --if-present
 
-      # Wait for HTML report to appear (sleep for 25 seconds)
+      # Wait for HTML report to appear (sleep for 60 seconds)
       - name: Wait for HTML report
         run: |
-          timeout=30  # Timeout in seconds
+          timeout=60  # Timeout in seconds
           while [ ! -f ./mochawesome-report/index.html ]; do
             sleep 1
             ((timeout--))
@@ -62,6 +62,13 @@ jobs:
       # Generate Allure Report.
       - name: Generate Allure Report.
         run: npx allure serve allure-results
+      # Export Allure Report URL
+      - name: Export Allure Report URL
+        uses: actions/upload-artifact@v2
+        with:
+          name: allure-report-url
+          path: allure-report-url.txt
+          content: $(npx allure serve allure-results | grep "http://localhost:4040")
       # Upload Mochawesome report
       - name: Upload Mochawesome report
         if: always()
@@ -69,3 +76,4 @@ jobs:
         with:
           name: mochawesome-report
           path: mochawesome-report
+          
