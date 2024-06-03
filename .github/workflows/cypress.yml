@@ -65,8 +65,8 @@ jobs:
       # Export Allure Report URL
       - name: Export Allure Report URL
         run: |
-          allure_report_url=$(npx allure open --port 0 allure-report | grep -o -E 'http://localhost:[0-9]+')
-          echo "$allure_report_url" > allure-report-url.txt
+          report_link=$(npx allure serve allure-results | grep -oP 'http://localhost:[0-9]+')
+          echo "::set-output name=report_link::$report_link"
       # Upload Allure Report URL artifact  
       - name: Upload Allure Report URL
         uses: actions/upload-artifact@v2
