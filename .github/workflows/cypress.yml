@@ -36,6 +36,12 @@ jobs:
       - name: Install dependencies
         if: needs.setup.outputs.versionChanged == 'true'
         run: npm install
+      # Install Allure com mand line
+      - name: install Allure commandline
+        run: npm install --save-dev allure-commandline
+      # Install Allure Reporter
+      - name: Install Allure Reporter
+        run: npm install --save-dev allure-cypress
 
       # Run Cypress tests
       - name: Run Cypress tests
@@ -53,7 +59,9 @@ jobs:
               exit 1
             fi
           done
-
+      # Generate Allure Report.
+      - name: Generate Allure Report.
+        run: npx allure serve allure-results
       # Upload Mochawesome report
       - name: Upload Mochawesome report
         if: always()

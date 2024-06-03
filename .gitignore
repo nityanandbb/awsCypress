@@ -134,6 +134,8 @@ dist
 # Videos
 /cypress/videos
 #Report
-#mochawesome-report
+mochawesome-report
 #Screenshots
 cypress/screenshots
+/allure-results
+.DS_Store
