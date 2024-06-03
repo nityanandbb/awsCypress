@@ -73,7 +73,7 @@ jobs:
 
       # Generate Allure Report
       - name: Set execute permissions for export script
-        run: chmod +x export_allure_report.sh
+       run: chmod +x export_allure_report.sh
 
       - name: Export Allure Report
-        run: ./export_allure_report.sh
+       run: ./export_allure_report.sh
