@@ -68,19 +68,21 @@ jobs:
           name: mochawesome-report
           path: mochawesome-report
 
-           # Generate Allure Report
+      # Generate Allure Report
       - name: Generate Allure Report
-        run: npx allure serve allure-results
-             timeout=30  # Timeout in seconds
-             
+        run: |
+          npx allure generate allure-results --output allure-report
+          sleep 30  # Sleep for 30 seconds
+
       # Export Allure Report URL
       - name: Export Allure Report URL
         run: |
           report_link=$(npx allure serve allure-results | grep -oP 'http://localhost:[0-9]+')
-          echo "::set-output name=report_link::$report_link"
+          echo "$report_link" > allure-report-url.txt
       # Upload Allure Report URL artifact  
       - name: Upload Allure Report URL
         uses: actions/upload-artifact@v2
         with:
           name: allure-report-url
           path: allure-report-url.txt
+          
