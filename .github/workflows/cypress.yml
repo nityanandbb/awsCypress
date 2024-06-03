@@ -71,6 +71,8 @@ jobs:
            # Generate Allure Report
       - name: Generate Allure Report
         run: npx allure serve allure-results
+             timeout=30  # Timeout in seconds
+             
       # Export Allure Report URL
       - name: Export Allure Report URL
         run: |
