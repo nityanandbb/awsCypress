@@ -70,19 +70,20 @@ jobs:
 
       # Generate Allure Report
       - name: Generate Allure Report
-        run: |
-          npx allure generate allure-results --output allure-report
-          sleep 30  # Sleep for 30 seconds
+        run: npx allure generate allure-results --clean -o allure-report
 
-      # Export Allure Report URL
-      - name: Export Allure Report URL
-        run: |
-          report_link=$(npx allure serve allure-results | grep -oP 'http://localhost:[0-9]+')
-          echo "$report_link" > allure-report-url.txt
-      # Upload Allure Report URL artifact  
-      - name: Upload Allure Report URL
-        uses: actions/upload-artifact@v2
-        with:
-          name: allure-report-url
-          path: allure-report-url.txt
+          sleep 20  # Sleep for 10 seconds
           
+     - name: Copy test execution videos, screenshots and reports
+        run: |
+          mkdir public
+          cp -r cypress/videos public/videos
+          cp -r cypress/screenshots public/screenshots
+          cp -a allure-report/. public
+          cp -r allure-results public/allure-results
+      
+      - name: Deploy report page to GitHub Page
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
