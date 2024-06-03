@@ -78,7 +78,6 @@ jobs:
       - name: Copy test execution videos, screenshots and reports
         run: |
           mkdir public
-         # cp -r cypress/videos public/videos
           cp -r cypress/screenshots public/screenshots
           cp -a allure-report/. public
           cp -r allure-results public/allure-results
