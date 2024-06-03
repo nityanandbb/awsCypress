@@ -41,7 +41,10 @@ jobs:
         run: npm install --save-dev allure-commandline
       # Install Allure Reporter
       - name: Install Allure Reporter
-        run: npm install --save-dev allure-cypress
+        run: npm i -D allure-cypress@2.14.0
+        # Install Allure Reporter
+      - name: Clean Allure Reporter
+        run: allure generate allure-results --clean
 
       # Run Cypress tests
       - name: Run Cypress tests
@@ -69,21 +72,8 @@ jobs:
           path: mochawesome-report
 
       # Generate Allure Report
-      - name: Generate Allure Report
-        run: npx allure generate allure-results --clean -o allure-report
+      - name: Set execute permissions for export script
+        run: chmod +x export_allure_report.sh
 
-      - name: Sleep for 20 seconds
-        run: sleep 20  # Sleep for 20 seconds
-      
-      # Copy Allure Report Files
-      - name: Copy Allure Report Files
-        run: |
-          mkdir allure-artifact
-          cp -r allure-report/. allure-artifact
-
-      # Define Artifacts
-      - name: Upload Allure Report Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: allure-report-artifact
-          path: allure-artifact
+      - name: Export Allure Report
+        run: ./export_allure_report.sh
