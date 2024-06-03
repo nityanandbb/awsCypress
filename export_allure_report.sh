@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Run allure serve and redirect the output to a file
-npx allure serve allure-results > allure_report.log
+# Generate Allure report
+npx allure generate allure-results --clean -o allure-report
 
-# Find the line containing the URL of the generated report
-report_url=$(grep -oP 'http://[^\s]*' allure_report.log)
+# Find the URL of the generated report
+report_url="file://$(pwd)/allure-report/index.html"
 
-# Download the HTML content of the report
-curl -o index.html "$report_url"
+# Output the URL to a file
+echo "$report_url" > report_url.txt
 
 # Terminla permission 
 # chmod +x export_allure_report.sh
