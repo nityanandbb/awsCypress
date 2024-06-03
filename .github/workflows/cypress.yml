@@ -47,10 +47,10 @@ jobs:
       - name: Run Cypress tests
         run: npm run cypress:run --if-present
 
-      # Wait for HTML report to appear (sleep for 60 seconds)
+      # Wait for HTML report to appear (sleep for 30 seconds)
       - name: Wait for HTML report
         run: |
-          timeout=60  # Timeout in seconds
+          timeout=30  # Timeout in seconds
           while [ ! -f ./mochawesome-report/index.html ]; do
             sleep 1
             ((timeout--))
@@ -59,16 +59,20 @@ jobs:
               exit 1
             fi
           done
-      # Generate Allure Report.
-      - name: Generate Allure Report.
-        run: npx allure serve allure-results
+      # Generate Allure Report
+      - name: Generate Allure Report
+        run: npx allure generate allure-results --output allure-report
       # Export Allure Report URL
       - name: Export Allure Report URL
+        run: |
+          allure_report_url=$(npx allure open --port 0 allure-report | grep -o -E 'http://localhost:[0-9]+')
+          echo "$allure_report_url" > allure-report-url.txt
+      # Upload Allure Report URL artifact  
+      - name: Upload Allure Report URL
         uses: actions/upload-artifact@v2
         with:
           name: allure-report-url
           path: allure-report-url.txt
-          content: $(npx allure serve allure-results | grep "http://localhost:4040")
       # Upload Mochawesome report
       - name: Upload Mochawesome report
         if: always()
